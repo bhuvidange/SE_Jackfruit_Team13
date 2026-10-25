@@ -12,11 +12,13 @@ app.use(cors({ origin: config.corsOrigin }));
 app.use(express.json({ limit: '100kb' }));
 
 // input sanitizer (CSMQP-SR-004) is mounted here
+app.use(require('./middleware/sanitize'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 
 // ---- feature routes: one line per module ----
+app.use('/api/questions', require('./routes/questions'));
 app.use('/api/materials', require('./routes/materials'));
 // ---- end feature routes ----
 

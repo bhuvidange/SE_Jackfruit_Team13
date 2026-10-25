@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 // --- question bank imports (stage 2)
+import QuestionBank from './pages/QuestionBank';
 
 // --- materials imports (stage 3)
 import ProtectedRoute from './components/ProtectedRoute';
@@ -20,6 +21,7 @@ export default function App() {
       <Route path="/register" element={<Register />} />
 
       {/* question bank routes (stage 2) */}
+      <Route path="/questions" element={<QuestionBank />} />
 
       {/* materials routes (stage 3) */}
       <Route path="/materials" element={<ProtectedRoute><Materials /></ProtectedRoute>} />
