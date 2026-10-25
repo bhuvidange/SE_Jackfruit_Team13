@@ -6,8 +6,12 @@ import Register from './pages/Register';
 import QuestionBank from './pages/QuestionBank';
 
 // --- materials imports (stage 3)
+import ProtectedRoute from './components/ProtectedRoute';
+import Materials from './pages/Materials';
+import NotFound from './pages/NotFound';
 
 // --- quiz imports (stage 4)
+import QuizAttempt from './pages/QuizAttempt';
 
 export default function App() {
   return (
@@ -20,8 +24,11 @@ export default function App() {
       <Route path="/questions" element={<QuestionBank />} />
 
       {/* materials routes (stage 3) */}
+      <Route path="/materials" element={<ProtectedRoute><Materials /></ProtectedRoute>} />
+      <Route path="*" element={<NotFound />} />
 
       {/* quiz routes (stage 4) */}
+      <Route path="/quizzes/:id/attempt" element={<ProtectedRoute roles={['student']}><QuizAttempt /></ProtectedRoute>} />
     </Routes>
   );
 }

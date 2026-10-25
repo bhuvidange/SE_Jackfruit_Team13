@@ -19,6 +19,7 @@ app.use('/api/auth', authRoutes);
 
 // ---- feature routes: one line per module ----
 app.use('/api/questions', require('./routes/questions'));
+app.use('/api/materials', require('./routes/materials'));
 // ---- end feature routes ----
 
 app.use((req, res) => res.status(404).json({ message: 'Not found' }));
