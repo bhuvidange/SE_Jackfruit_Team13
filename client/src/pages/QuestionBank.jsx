@@ -1,27 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getToken } from '../utils/tokenStore';
-
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
-
-// Minimal request helper; stage 3 introduces services/api.js and stage 4 switches this page over to it.
-async function api(path, { method = 'GET', body } = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method,
-    headers: { ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}), ...(body ? { 'Content-Type': 'application/json' } : {}) },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const data = await res.json().catch(() => null);
-  if (!res.ok) throw new Error((data && data.message) || 'Request failed');
-  return data;
-}
-
-function qs(params) {
-  const sp = new URLSearchParams();
-  Object.entries(params).forEach(([k, v]) => v && sp.set(k, v));
-  const s = sp.toString();
-  return s ? `?${s}` : '';
-}
+import { api, qs } from '../services/api';
 
 const blank = () => ({ type: 'mcq', text: '', options: ['', '', '', ''], correctAnswer: 0, subject: '', topic: '', difficulty: 'easy' });
 const NO_FILTERS = { subject: '', topic: '', difficulty: '', q: '' };
