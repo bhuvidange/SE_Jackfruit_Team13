@@ -7,16 +7,10 @@ const config = require('../config');
 const Material = require('../models/Material');
 const HttpError = require('../utils/httpError');
 const authenticate = require('../middleware/authenticate');
+const authorize = require('../middleware/authorize');
+const { clean } = require('../middleware/sanitize');
 
 const router = express.Router();
-
-// Minimal role guard; stage 4 replaces it with the shared middleware/authorize.js (stage 2).
-function authorize(...roles) {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) throw new HttpError(403, 'You do not have permission to perform this action');
-    next();
-  };
-}
 
 // CSMQP-F-010: supported formats. The leading bytes of the file must match its extension.
 const FORMATS = {
@@ -54,7 +48,11 @@ const upload = multer({
 
 function receiveFile(req, res, next) {
   upload.single('file')(req, res, (err) => {
-    if (!err) return next();
+    if (!err) {
+      // multipart fields are parsed after the global sanitizer ran, so sanitize them here too
+      req.body = clean(req.body || {});
+      return next();
+    }
     if (err.code === 'LIMIT_FILE_SIZE') {
       return next(new HttpError(413, `File is too large. The maximum size is ${config.maxUploadBytes / (1024 * 1024)} MB`));
     }

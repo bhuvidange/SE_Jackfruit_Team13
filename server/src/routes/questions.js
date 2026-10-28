@@ -1,5 +1,6 @@
 const express = require('express');
 const Question = require('../models/Question');
+const Quiz = require('../models/Quiz');
 const HttpError = require('../utils/httpError');
 const authenticate = require('../middleware/authenticate');
 const authorize = require('../middleware/authorize');
@@ -104,7 +105,9 @@ router.put('/:id', authorize('instructor'), async (req, res) => {
 router.delete('/:id', authorize('instructor'), async (req, res) => {
   const question = await findActive(req.params.id);
   assertOwner(question, req.user);
-  // published-quiz guard is added in stage 4 (Quiz model)
+  if (await Quiz.exists({ questions: question._id, published: true })) {
+    throw new HttpError(409, 'This question is used in a published quiz and cannot be deleted');
+  }
   question.status = 'removed';
   await question.save();
   res.json({ message: 'Question deleted' });
