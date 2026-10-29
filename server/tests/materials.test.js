@@ -205,3 +205,37 @@ describe('TC-Mat-04 student searches by name/keyword and downloads (CSMQP-F-013)
     expect((await request(app).get(`/api/materials/${body.material.id}/download`).set(bearer(token))).status).toBe(404);
   });
 });
+
+describe('DELETE /api/materials/:id (owner or admin only)', () => {
+  const del = (token, id) => request(app).delete(`/api/materials/${id}`).set(bearer(token));
+
+  test('the owner can delete; the material then disappears from search', async () => {
+    const { token } = await createUser('instructor');
+    const { body } = await upload(token);
+    expect((await del(token, body.material.id)).status).toBe(200);
+    expect((await request(app).get('/api/materials').set(bearer(token))).body.materials).toHaveLength(0);
+  });
+
+  test('an admin can delete any material', async () => {
+    const owner = await createUser('instructor');
+    const admin = await createUser('admin');
+    const { body } = await upload(owner.token);
+    expect((await del(admin.token, body.material.id)).status).toBe(200);
+  });
+
+  test('another instructor and a student get 403 and the material stays', async () => {
+    const owner = await createUser('instructor');
+    const other = await createUser('instructor');
+    const student = await createUser('student');
+    const { body } = await upload(owner.token);
+    expect((await del(other.token, body.material.id)).status).toBe(403);
+    expect((await del(student.token, body.material.id)).status).toBe(403);
+    expect((await request(app).get('/api/materials').set(bearer(owner.token))).body.materials).toHaveLength(1);
+  });
+
+  test('needs authentication; unknown id is 404', async () => {
+    const { token } = await createUser('instructor');
+    expect((await request(app).delete('/api/materials/64b000000000000000000001')).status).toBe(401);
+    expect((await del(token, '64b000000000000000000001')).status).toBe(404);
+  });
+});

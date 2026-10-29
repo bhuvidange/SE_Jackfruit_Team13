@@ -144,3 +144,55 @@ describe('TC-Mat-02 client-side 15 MB check (CSMQP-F-011)', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Unsupported file type');
   });
 });
+
+describe('Delete material (owner or admin only)', () => {
+  const owned = { ...material, owner: 'i1' };
+  const list = { match: /\/materials$/, body: { materials: [owned] } };
+
+  test('visible to the owner, admin; hidden from students and other instructors', async () => {
+    mockFetch([list]);
+    const { unmount } = renderWithAuth(<Materials />, { user: users.instructor });
+    expect(await screen.findByRole('button', { name: 'Delete TCP handshake' })).toBeInTheDocument();
+    unmount();
+    const admin = renderWithAuth(<Materials />, { user: users.admin });
+    expect(await screen.findByRole('button', { name: 'Delete TCP handshake' })).toBeInTheDocument();
+    admin.unmount();
+    const student = renderWithAuth(<Materials />, { user: users.student });
+    await screen.findByText('TCP handshake');
+    expect(screen.queryByRole('button', { name: /^Delete/ })).not.toBeInTheDocument();
+    student.unmount();
+    renderWithAuth(<Materials />, { user: { ...users.instructor, id: 'i2' } });
+    await screen.findByText('TCP handshake');
+    expect(screen.queryByRole('button', { name: /^Delete/ })).not.toBeInTheDocument();
+  });
+
+  test('confirming calls DELETE and removes the card', async () => {
+    const fetchMock = mockFetch([{ method: 'DELETE', match: /\/materials\/m1$/, body: { message: 'Material deleted' } }, list]);
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    renderWithAuth(<Materials />, { user: users.instructor });
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete TCP handshake' }));
+    await waitFor(() => expect(screen.queryByText('TCP handshake')).not.toBeInTheDocument());
+    expect(fetchMock.mock.calls.some(([u, o]) => o?.method === 'DELETE' && u.endsWith('/materials/m1'))).toBe(true);
+    expect(screen.getByText('No materials found.')).toBeInTheDocument();
+  });
+
+  test('cancelling the confirmation keeps the card and sends nothing', async () => {
+    const fetchMock = mockFetch([list]);
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    renderWithAuth(<Materials />, { user: users.instructor });
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete TCP handshake' }));
+    expect(screen.getByText('TCP handshake')).toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([, o]) => o?.method === 'DELETE')).toBe(false);
+  });
+});
+
+describe('Empty search state', () => {
+  test('a search with no hits shows "No materials found"', async () => {
+    mockFetch([{ match: /\/materials/, body: (url) => ({ materials: url.includes('query=zzz') ? [] : [material] }) }]);
+    renderWithAuth(<Materials />);
+    await screen.findByText('TCP handshake');
+    await userEvent.type(screen.getByLabelText('Search by name or keyword'), 'zzz');
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }));
+    expect(await screen.findByText(/^No materials found/)).toBeInTheDocument();
+  });
+});
