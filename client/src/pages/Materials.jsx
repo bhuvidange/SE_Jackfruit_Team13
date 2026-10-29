@@ -51,6 +51,21 @@ export default function Materials() {
     }
   };
 
+  const canDelete = (m) => user.role === 'admin' || (user.role === 'instructor' && m.owner === user.id);
+
+  const onDelete = async (m) => {
+    if (!window.confirm(`Delete "${m.title}"? This cannot be undone.`)) return;
+    setError('');
+    setMessage('');
+    try {
+      await api(`/materials/${m.id}`, { method: 'DELETE' });
+      setMaterials((list) => list.filter((x) => x.id !== m.id));
+      setMessage('Material deleted');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   async function onUpload(e) {
     e.preventDefault();
     setError('');
@@ -139,6 +154,9 @@ export default function Materials() {
                   <td>{formatSize(m.size)}</td>
                   <td>
                     <button className="btn small" type="button" onClick={() => onDownload(m)} aria-label={`Download ${m.title}`}>Download</button>
+                    {canDelete(m) && (
+                      <button className="btn small danger" type="button" onClick={() => onDelete(m)} aria-label={`Delete ${m.title}`}>Delete</button>
+                    )}
                   </td>
                 </tr>
               ))}
