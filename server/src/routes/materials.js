@@ -151,4 +151,15 @@ router.get('/:id/download', async (req, res) => {
   res.download(file, material.originalName);
 });
 
+// Delete (soft delete): owner or admin only
+router.delete('/:id', authorize('instructor', 'admin'), async (req, res) => {
+  const material = await findActive(req.params.id);
+  if (req.user.role !== 'admin' && !material.owner.equals(req.user._id)) {
+    throw new HttpError(403, 'You can only delete your own materials');
+  }
+  material.status = 'removed';
+  await material.save();
+  res.json({ message: 'Material deleted' });
+});
+
 module.exports = router;
