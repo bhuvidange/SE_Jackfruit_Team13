@@ -179,6 +179,7 @@ describe('TC-Sec-04 injection payloads are neutralised (CSMQP-SR-004)', () => {
         ...question,
         text: 'What is 2+2? <script>alert(1)</script><img src=x onerror=alert(1)>',
         subject: '<b onmouseover=alert(1)>Maths</b>',
+        topic: '<img src=x onerror=alert(1)>Algebra',
         options: ['<svg/onload=alert(1)>4', 'javascript:alert(1)', 'C', 'D'],
       });
     expect(res.status).toBe(201);
@@ -186,6 +187,7 @@ describe('TC-Sec-04 injection payloads are neutralised (CSMQP-SR-004)', () => {
     const blob = JSON.stringify(stored.toObject());
     expect(blob).not.toMatch(/<script|<img|<svg|<b |onerror=alert\(1\)>|javascript:/i);
     expect(stored.subject).toBe('Maths');
+    expect(stored.topic).toBe('Algebra');
   });
 
   test('plain comparisons such as "a < b" survive sanitising', async () => {
