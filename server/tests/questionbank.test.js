@@ -62,6 +62,7 @@ describe('TC-QB-01 instructor adds a question (CSMQP-F-020)', () => {
       'Tree',
       'Graph',
     ]);
+    expect(fetched.body.question.correctAnswer).toBe(1);
     expect(await Question.countDocuments()).toBe(1);
 
     const list = await request(app)
