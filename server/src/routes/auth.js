@@ -6,14 +6,19 @@ const HttpError = require('../utils/httpError');
 const validatePassword = require('../utils/passwordPolicy');
 const { signToken } = require('../utils/jwt');
 const authenticate = require('../middleware/authenticate');
+const rateLimit = require('../middleware/rateLimit');
 
 const router = express.Router();
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Compared against when the email is unknown so response time does not reveal which emails exist.
 const DUMMY_HASH = bcrypt.hashSync('not-a-real-password', config.bcryptRounds);
+// Separate budgets so a burst of sign-ups does not lock a user out of logging in.
+const authLimit = { windowMs: config.authRateLimit.windowMs, max: config.authRateLimit.max };
+const registerLimiter = rateLimit({ ...authLimit, message: 'Too many registration attempts, please try again later' });
+const loginLimiter = rateLimit({ ...authLimit, message: 'Too many login attempts, please try again later' });
 
 // CSMQP-F-001
-router.post('/register', async (req, res) => {
+router.post('/register', registerLimiter, async (req, res) => {
   const { name, email, password, role = 'student' } = req.body || {};
   const errors = [];
   if (typeof name !== 'string' || !name.trim()) errors.push('Name is required');
@@ -46,7 +51,7 @@ router.post('/register', async (req, res) => {
 });
 
 // CSMQP-F-002
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   const { email, password } = req.body || {};
   // Only plain strings are accepted, so operator objects such as {"$gt": ""} never reach the query.
   if (typeof email !== 'string' || typeof password !== 'string') {
