@@ -15,5 +15,9 @@ module.exports = {
   uploadDir: path.resolve(__dirname, '..', process.env.UPLOAD_DIR || 'uploads'),
   maxUploadBytes: 15 * 1024 * 1024, // CSMQP-F-011
   submitGraceSeconds: Number(process.env.SUBMIT_GRACE_SECONDS ?? 5),
+  authRateLimit: {
+    windowMs: Number(process.env.AUTH_RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+    max: Number(process.env.AUTH_RATE_LIMIT_MAX) || 20,
+  },
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
 };
