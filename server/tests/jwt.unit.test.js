@@ -24,8 +24,29 @@ describe('TC-Auth-03 JWT issue/verify (unit)', () => {
   });
 });
 
+
 describe('TC-Auth-02 password policy (unit)', () => {
-  test('accepts a compliant password', () => expect(validatePassword('Passw0rd!')).toEqual([]));
-  test('rejects non-strings', () => expect(validatePassword(undefined)).toHaveLength(1));
-  test('reports every violated rule', () => expect(validatePassword('abc').length).toBe(3));
+  test('accepts a compliant password', () => {
+    expect(validatePassword('Passw0rd!')).toEqual([]);
+  });
+
+  test('rejects non-strings', () => {
+    expect(validatePassword(undefined)).toHaveLength(1);
+  });
+
+  test('reports every violated rule', () => {
+    expect(validatePassword('abc').length).toBe(3);
+  });
+
+  test('accepts a Unicode password within the bcrypt byte limit', () => {
+    expect(validatePassword('Abcdef1😊')).toEqual([]);
+  });
+
+  test('rejects a password exceeding bcrypt 72-byte limit', () => {
+    const password = 'Aa1' + 'é'.repeat(36);
+    expect(Buffer.byteLength(password, 'utf8')).toBeGreaterThan(72);
+    expect(validatePassword(password)).toContain(
+      'Password must not exceed 72 bytes'
+    );
+  });
 });
