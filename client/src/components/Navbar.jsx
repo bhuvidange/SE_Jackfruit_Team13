@@ -13,6 +13,7 @@ export default function Navbar() {
           <NavLink to="/materials">Study Materials</NavLink>
           {isStaff && <NavLink to="/questions">Question Bank</NavLink>}
           {user.role !== 'admin' && <NavLink to="/quizzes">Quizzes</NavLink>}
+          {user.role === 'admin' && <NavLink to="/admin/users">Manage Users</NavLink>}
           <span>{user.name} ({user.role})</span>
           <button type="button" onClick={logout}>Log out</button>
         </>
