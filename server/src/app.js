@@ -21,6 +21,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/questions', require('./routes/questions'));
 app.use('/api/materials', require('./routes/materials'));
 app.use('/api/quizzes', require('./routes/quizzes'));
+app.use('/api/admin', require('./routes/admin'));
 // ---- end feature routes ----
 
 app.use((req, res) => res.status(404).json({ message: 'Not found' }));
