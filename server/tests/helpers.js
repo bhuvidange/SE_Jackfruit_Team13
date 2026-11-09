@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../src/app');
+const authRoutes = require('../src/routes/auth');
 const User = require('../src/models/User');
 
 let counter = 0;
@@ -20,6 +21,7 @@ async function disconnect() {
 }
 
 async function clearAll() {
+  authRoutes.loginLockout.reset();
   const { collections } = mongoose.connection;
   await Promise.all(Object.values(collections).map((c) => c.deleteMany({})));
 }

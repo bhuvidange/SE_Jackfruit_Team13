@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: csmqp-api
+    runtime: node
+    plan: 0.5c-512mb
+    branch: main
+    rootDir: server
+    buildFilter:
+      paths:
+        - server/**
+        - render.yaml
+    buildCommand: npm ci
+    startCommand: npm start
+    autoDeployTrigger: checksPass
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: AUTH_RATE_LIMIT_MAX
+        value: "20"
+      - key: AUTH_RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+      - key: LOGIN_LOCKOUT_MAX_FAILURES
+        value: "6"
+      - key: LOGIN_LOCKOUT_WINDOW_MS
+        value: "900000"
+    disk:
+      name: csmqp-uploads
+      mountPath: /var/data
+      sizeGB: 1
