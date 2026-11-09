@@ -1,6 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
-const cors = require('cors');
+const cors = require('./middleware/cors');
 const config = require('./config');
 const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/auth');
@@ -8,7 +8,7 @@ const authRoutes = require('./routes/auth');
 const app = express();
 app.disable('x-powered-by');
 app.use(helmet());
-app.use(cors({ origin: config.corsOrigin }));
+app.use(cors({ origin: config.corsOrigins }));
 app.use(express.json({ limit: '100kb' }));
 
 // input sanitizer (CSMQP-SR-004) is mounted here

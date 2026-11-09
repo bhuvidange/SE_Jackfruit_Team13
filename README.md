@@ -1,7 +1,9 @@
 # CSMQP - Collaborative Study Material & Quiz Platform
 
+![CI](https://github.com/bhuvidange/SE_Jackfruit_Team13/actions/workflows/ci.yml/badge.svg?branch=main)
+
 MERN application built from the team's SRS, Software Architecture & Design Specification and Software Test Plan
-(SE_Jackfruit_Team13). This repository contains **Sprint 1**:
+(SE_Jackfruit_Team13). Sprint 1 features and Sprint 2 admin user management are implemented:
 
 | Area | Requirements |
 | --- | --- |
@@ -9,8 +11,9 @@ MERN application built from the team's SRS, Software Architecture & Design Speci
 | Question bank | CSMQP-F-020..023 |
 | Study materials | CSMQP-F-010..013 |
 | Quizzes | CSMQP-F-030..035 (create from bank, time limit, publish, attempt, auto-score, per-question result) |
+| Admin user management | CSMQP-F-050 (search, block/unblock and delete accounts) |
 
-Analytics (F-040..042) and admin screens (F-050..051) are Sprint 2. Differences from the design documents are listed in
+Analytics (F-040..042) remain Sprint 2 work. Differences from the design documents are listed in
 [docs/sprint-1/DEVIATIONS.md](docs/sprint-1/DEVIATIONS.md).
 
 ```
@@ -85,8 +88,11 @@ cd client ; npm run build # production build
 
 Tests are named after the Test Plan IDs (`TC-Auth-01` ... `TC-Sec-05`), e.g. `TC-Mat-02` covers the 15 MB boundary
 (exactly 15 MB accepted, 15 MB + 1 byte rejected) and `TC-Sec-02` covers expired and tampered JWTs.
-GitHub Actions (`.github/workflows/ci.yml`) installs, tests both apps and builds the client on every push and pull
-request to `main`.
+GitHub Actions (`.github/workflows/ci.yml`) installs and tests both apps and builds the client on every branch push and
+every pull request to `main`. CI uploads server and client coverage reports as workflow artifacts (`server-coverage` and
+`client-coverage`); open a successful or failed workflow run to download them. The badge above tracks `main`.
+
+See [Sprint 2 deployment instructions](docs/sprint-2/DEPLOYMENT.md) for hosted deployment configuration and status.
 
 ## API summary
 

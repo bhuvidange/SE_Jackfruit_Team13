@@ -7,6 +7,7 @@ const validatePassword = require('../utils/passwordPolicy');
 const { signToken } = require('../utils/jwt');
 const authenticate = require('../middleware/authenticate');
 const rateLimit = require('../middleware/rateLimit');
+const createLoginLockout = require('../middleware/loginLockout');
 
 const router = express.Router();
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,6 +17,7 @@ const DUMMY_HASH = bcrypt.hashSync('not-a-real-password', config.bcryptRounds);
 const authLimit = { windowMs: config.authRateLimit.windowMs, max: config.authRateLimit.max };
 const registerLimiter = rateLimit({ ...authLimit, message: 'Too many registration attempts, please try again later' });
 const loginLimiter = rateLimit({ ...authLimit, message: 'Too many login attempts, please try again later' });
+const loginLockout = createLoginLockout(config.loginLockout);
 
 // CSMQP-F-001
 router.post('/register', registerLimiter, async (req, res) => {
@@ -51,7 +53,7 @@ router.post('/register', registerLimiter, async (req, res) => {
 });
 
 // CSMQP-F-002
-router.post('/login', loginLimiter, async (req, res) => {
+router.post('/login', loginLimiter, loginLockout, async (req, res) => {
   const { email, password } = req.body || {};
   // Only plain strings are accepted, so operator objects such as {"$gt": ""} never reach the query.
   if (typeof email !== 'string' || typeof password !== 'string') {
@@ -59,11 +61,20 @@ router.post('/login', loginLimiter, async (req, res) => {
   }
   const user = await User.findOne({ email: email.trim().toLowerCase() }).select('+passwordHash');
   const matches = await bcrypt.compare(password, user ? user.passwordHash : DUMMY_HASH);
-  if (!user || !matches) throw new HttpError(401, 'Invalid email or password');
+  if (!user || !matches) {
+    const lockout = loginLockout.recordFailure(req);
+    if (lockout.blocked) {
+      res.set('Retry-After', String(lockout.retryAfter));
+      throw new HttpError(429, 'Too many failed login attempts, please try again later');
+    }
+    throw new HttpError(401, 'Invalid email or password');
+  }
   if (user.status !== 'active') throw new HttpError(403, 'Account is blocked');
+  loginLockout.clear(req);
   res.json({ user, token: signToken(user) });
 });
 
 router.get('/me', authenticate, (req, res) => res.json({ user: req.user }));
 
+router.loginLockout = loginLockout;
 module.exports = router;
