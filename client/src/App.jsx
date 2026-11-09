@@ -13,6 +13,7 @@ import QuizAttempt from './pages/QuizAttempt';
 import QuizCreate from './pages/QuizCreate';
 import QuizList from './pages/QuizList';
 import QuizResult from './pages/QuizResult';
+import AdminUsers from './pages/AdminUsers';
 
 const staff = ['instructor', 'admin'];
 
@@ -28,6 +29,7 @@ export default function App() {
 
       {/* materials routes (stage 3) */}
       <Route path="/materials" element={<ProtectedRoute><Materials /></ProtectedRoute>} />
+      <Route path="/admin/users" element={<ProtectedRoute roles={['admin']}><AdminUsers /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
 
       {/* quiz routes (stage 4) */}
