@@ -28,6 +28,17 @@ describe('Navbar (role-aware navigation)', () => {
     }
   });
 
+  test('only admins see the Moderation link', () => {
+    const { unmount } = renderWithAuth(<Navbar />, { user: users.admin });
+    expect(screen.getByRole('link', { name: 'Moderation' })).toHaveAttribute('href', '/admin/moderation');
+    unmount();
+    for (const user of [users.student, users.instructor, null]) {
+      const view = renderWithAuth(<Navbar />, { user });
+      expect(screen.queryByRole('link', { name: 'Moderation' })).not.toBeInTheDocument();
+      view.unmount();
+    }
+  });
+
   test('instructors see the Question Bank link and can log out', async () => {
     const { auth } = renderWithAuth(<Navbar />, { user: users.instructor });
     expect(screen.getByRole('link', { name: 'Question Bank' })).toBeInTheDocument();

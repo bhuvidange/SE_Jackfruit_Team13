@@ -14,6 +14,7 @@ export default function Navbar() {
           {isStaff && <NavLink to="/questions">Question Bank</NavLink>}
           {user.role !== 'admin' && <NavLink to="/quizzes">Quizzes</NavLink>}
           {user.role === 'admin' && <NavLink to="/admin/users">Manage Users</NavLink>}
+          {user.role === 'admin' && <NavLink to="/admin/moderation">Moderation</NavLink>}
           <span>{user.name} ({user.role})</span>
           <button type="button" onClick={logout}>Log out</button>
         </>
