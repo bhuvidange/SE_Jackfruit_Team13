@@ -150,3 +150,28 @@ describe('TC-Quiz-04 attempt, manual submit and auto-submit (CSMQP-F-033)', () =
     expect(screen.getByRole('link', { name: 'Back to quizzes' })).toBeInTheDocument();
   });
 });
+
+describe('TC-Admin-08 Report button on quiz questions (CSMQP-F-051)', () => {
+  beforeEach(() => vi.useFakeTimers());
+
+  test('each question has a Report button; reporting does not submit the quiz', async () => {
+    const fetchMock = mount([
+      { method: 'POST', match: /\/start/, body: startResponse(120) },
+      { method: 'POST', match: /\/reports$/, status: 201, body: { report: { id: 'r1' } } },
+    ]);
+    await flush();
+    const buttons = screen.getAllByRole('button', { name: 'Report this question' });
+    expect(buttons).toHaveLength(2);
+
+    fireEvent.click(buttons[1]);
+    fireEvent.change(screen.getByLabelText('Why are you reporting this?'), { target: { value: 'Wrong answer key' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send report' }));
+    await flush();
+
+    expect(screen.getByText('Reported - thank you')).toBeInTheDocument();
+    const post = fetchMock.mock.calls.find(([u]) => u.includes('/reports'));
+    expect(sentBody(post)).toEqual({ targetType: 'question', targetId: 'q2', reason: 'Wrong answer key' });
+    expect(fetchMock.mock.calls.some(([u]) => u.includes('/submit'))).toBe(false);
+    expect(screen.queryByText('result page')).not.toBeInTheDocument();
+  });
+});
