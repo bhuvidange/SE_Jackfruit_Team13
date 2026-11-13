@@ -1,0 +1,56 @@
+
+config:
+  target: "http://127.0.0.1:5000"
+
+  processor: "./processor.js"
+
+  phases:
+    - name: "500-user load test"
+      duration: 30
+      arrivalCount: 500
+
+  payload:
+    path: "users.csv"
+    fields:
+      - email
+      - password
+    order: sequence
+    skipHeader: true
+
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "Student completes a quiz"
+    flow:
+
+      # Step 1: Student login
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "{{ email }}"
+            password: "{{ password }}"
+          afterResponse: "saveLogin"
+
+      # Step 2: Fetch available quizzes
+      - get:
+          url: "/api/quizzes"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          afterResponse: "saveQuiz"
+
+      # Step 3: Start quiz attempt
+      - post:
+          url: "/api/quizzes/{{ quizId }}/start"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          afterResponse: "saveStartedQuiz"
+
+      # Step 4: Submit quiz answers and measure grading
+      - post:
+          url: "/api/quizzes/{{ quizId }}/submit"
+          headers:
+            Authorization: "Bearer {{ token }}"
+          beforeRequest: "prepareSubmit"
+          afterResponse: "recordGradingTime"
