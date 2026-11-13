@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Materials from './Materials';
 import { mockFetch } from '../test/mockFetch';
@@ -194,5 +194,39 @@ describe('Empty search state', () => {
     await userEvent.type(screen.getByLabelText('Search by name or keyword'), 'zzz');
     await userEvent.click(screen.getByRole('button', { name: 'Search' }));
     expect(await screen.findByText(/^No materials found/)).toBeInTheDocument();
+  });
+});
+
+describe('TC-Admin-08 Report button on materials (CSMQP-F-051)', () => {
+  const mine = { ...material, id: 'm2', title: 'My own notes', owner: 'i1' };
+  const others = { ...material, owner: 'someone-else' };
+
+  test('shown on other people\'s materials, hidden on your own', async () => {
+    mockFetch([{ match: /\/materials/, body: { materials: [others, mine] } }]);
+    renderWithAuth(<Materials />, { user: users.instructor });
+    const row = (await screen.findByText('TCP handshake')).closest('tr');
+    expect(within(row).getByRole('button', { name: 'Report this material' })).toBeInTheDocument();
+    expect(within(screen.getByText('My own notes').closest('tr')).queryByRole('button', { name: 'Report this material' })).not.toBeInTheDocument();
+  });
+
+  test('hidden for admins', async () => {
+    mockFetch([{ match: /\/materials/, body: { materials: [others] } }]);
+    renderWithAuth(<Materials />, { user: users.admin });
+    await screen.findByText('TCP handshake');
+    expect(screen.queryByRole('button', { name: 'Report this material' })).not.toBeInTheDocument();
+  });
+
+  test('a student can report a material', async () => {
+    const fetchMock = mockFetch([
+      { method: 'POST', match: /\/reports$/, status: 201, body: { report: { id: 'r1' } } },
+      { match: /\/materials/, body: { materials: [others] } },
+    ]);
+    renderWithAuth(<Materials />, { user: users.student });
+    await userEvent.click(await screen.findByRole('button', { name: 'Report this material' }));
+    await userEvent.type(screen.getByLabelText('Why are you reporting this?'), 'Spam');
+    await userEvent.click(screen.getByRole('button', { name: 'Send report' }));
+    expect(await screen.findByText('Reported - thank you')).toBeInTheDocument();
+    const post = fetchMock.mock.calls.find(([, o]) => o?.method === 'POST');
+    expect(JSON.parse(post[1].body)).toEqual({ targetType: 'material', targetId: 'm1', reason: 'Spam' });
   });
 });

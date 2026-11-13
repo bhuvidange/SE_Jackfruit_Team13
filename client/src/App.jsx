@@ -14,6 +14,7 @@ import QuizList from './pages/QuizList';
 import QuizResult from './pages/QuizResult';
 import AdminUsers from './pages/AdminUsers';
 import StudentDashboard from './pages/StudentDashboard';
+import AdminModeration from './pages/AdminModeration';
 
 const staff = ['instructor', 'admin'];
 
@@ -101,6 +102,8 @@ export default function App() {
         }
       />
 
+      
+      <Route path="/admin/moderation" element={<ProtectedRoute roles={['admin']}><AdminModeration /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

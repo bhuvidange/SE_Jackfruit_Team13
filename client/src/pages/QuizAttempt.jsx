@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import ReportButton from '../components/ReportButton';
 import { api } from '../services/api';
 
 export const formatClock = (seconds) => {
@@ -113,6 +114,7 @@ export default function QuizAttempt() {
           <fieldset key={q.id} className="card">
             <legend>Question {i + 1}</legend>
             <p>{q.text}</p>
+            <ReportButton targetType="question" targetId={q.id} />
             {q.options.map((opt, idx) => (
               <label key={idx} className="option">
                 <input
