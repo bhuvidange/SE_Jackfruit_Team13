@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import ReportButton from '../components/ReportButton';
 import { api, downloadFile, qs } from '../services/api';
 
 const MAX_BYTES = 15 * 1024 * 1024;
@@ -50,6 +51,8 @@ export default function Materials() {
       setError(err.message);
     }
   };
+
+  const canReport = (m) => user.role !== 'admin' && m.owner !== user.id;
 
   const canDelete = (m) => user.role === 'admin' || (user.role === 'instructor' && m.owner === user.id);
 
@@ -154,6 +157,7 @@ export default function Materials() {
                   <td>{formatSize(m.size)}</td>
                   <td>
                     <button className="btn small" type="button" onClick={() => onDownload(m)} aria-label={`Download ${m.title}`}>Download</button>
+                    {canReport(m) && <ReportButton targetType="material" targetId={m.id} />}
                     {canDelete(m) && (
                       <button className="btn small danger" type="button" onClick={() => onDelete(m)} aria-label={`Delete ${m.title}`}>Delete</button>
                     )}
