@@ -6,3 +6,6 @@ coverage/
 dist/
 node_modules/
 uploads/
+# Load testing credentials and generated data
+loadtest/users.csv
+loadtest/.env

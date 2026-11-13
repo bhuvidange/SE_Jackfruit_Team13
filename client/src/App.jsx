@@ -1,19 +1,19 @@
+
 import { Route, Routes } from 'react-router-dom';
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-// --- question bank imports (stage 2)
 import QuestionBank from './pages/QuestionBank';
-// --- materials imports (stage 3)
 import ProtectedRoute from './components/ProtectedRoute';
 import Materials from './pages/Materials';
 import NotFound from './pages/NotFound';
-// --- quiz imports (stage 4)
 import QuizAttempt from './pages/QuizAttempt';
 import QuizCreate from './pages/QuizCreate';
 import QuizList from './pages/QuizList';
 import QuizResult from './pages/QuizResult';
 import AdminUsers from './pages/AdminUsers';
+import StudentDashboard from './pages/StudentDashboard';
 import AdminModeration from './pages/AdminModeration';
 
 const staff = ['instructor', 'admin'];
@@ -25,20 +25,86 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* question bank routes (stage 2) */}
-      <Route path="/questions" element={<ProtectedRoute roles={staff}><QuestionBank /></ProtectedRoute>} />
+      {/* Student dashboard */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute roles={['student']}>
+            <StudentDashboard />
+          </ProtectedRoute>
+        }
+      />
 
-      {/* materials routes (stage 3) */}
-      <Route path="/materials" element={<ProtectedRoute><Materials /></ProtectedRoute>} />
-      <Route path="/admin/users" element={<ProtectedRoute roles={['admin']}><AdminUsers /></ProtectedRoute>} />
+      {/* Question bank routes */}
+      <Route
+        path="/questions"
+        element={
+          <ProtectedRoute roles={staff}>
+            <QuestionBank />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Materials routes */}
+      <Route
+        path="/materials"
+        element={
+          <ProtectedRoute>
+            <Materials />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Admin routes */}
+      <Route
+        path="/admin/users"
+        element={
+          <ProtectedRoute roles={['admin']}>
+            <AdminUsers />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Quiz routes */}
+      <Route
+        path="/quizzes"
+        element={
+          <ProtectedRoute roles={['student', 'instructor']}>
+            <QuizList />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/quizzes/new"
+        element={
+          <ProtectedRoute roles={['instructor']}>
+            <QuizCreate />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/quizzes/:id/attempt"
+        element={
+          <ProtectedRoute roles={['student']}>
+            <QuizAttempt />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/attempts/:attemptId"
+        element={
+          <ProtectedRoute roles={['student', 'instructor']}>
+            <QuizResult />
+          </ProtectedRoute>
+        }
+      />
+
+      
       <Route path="/admin/moderation" element={<ProtectedRoute roles={['admin']}><AdminModeration /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
-
-      {/* quiz routes (stage 4) */}
-      <Route path="/quizzes" element={<ProtectedRoute roles={['student', 'instructor']}><QuizList /></ProtectedRoute>} />
-      <Route path="/quizzes/new" element={<ProtectedRoute roles={['instructor']}><QuizCreate /></ProtectedRoute>} />
-      <Route path="/quizzes/:id/attempt" element={<ProtectedRoute roles={['student']}><QuizAttempt /></ProtectedRoute>} />
-      <Route path="/attempts/:attemptId" element={<ProtectedRoute roles={['student', 'instructor']}><QuizResult /></ProtectedRoute>} />
     </Routes>
   );
 }
