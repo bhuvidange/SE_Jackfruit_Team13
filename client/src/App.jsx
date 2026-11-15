@@ -15,6 +15,7 @@ import QuizResult from './pages/QuizResult';
 import AdminUsers from './pages/AdminUsers';
 import StudentDashboard from './pages/StudentDashboard';
 import AdminModeration from './pages/AdminModeration';
+import InstructorAnalytics from './pages/InstructorAnalytics';
 
 const staff = ['instructor', 'admin'];
 
@@ -31,6 +32,16 @@ export default function App() {
         element={
           <ProtectedRoute roles={['student']}>
             <StudentDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Instructor analytics */}
+      <Route
+        path="/instructor/analytics"
+        element={
+          <ProtectedRoute roles={['instructor']}>
+            <InstructorAnalytics />
           </ProtectedRoute>
         }
       />
@@ -61,6 +72,15 @@ export default function App() {
         element={
           <ProtectedRoute roles={['admin']}>
             <AdminUsers />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/moderation"
+        element={
+          <ProtectedRoute roles={['admin']}>
+            <AdminModeration />
           </ProtectedRoute>
         }
       />
@@ -102,8 +122,7 @@ export default function App() {
         }
       />
 
-      
-      <Route path="/admin/moderation" element={<ProtectedRoute roles={['admin']}><AdminModeration /></ProtectedRoute>} />
+      {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

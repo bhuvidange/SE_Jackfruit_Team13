@@ -21,12 +21,34 @@ export default function Navbar() {
           )}
 
           <NavLink to="/materials">Study Materials</NavLink>
-          {isStaff && <NavLink to="/questions">Question Bank</NavLink>}
-          {user.role !== 'admin' && <NavLink to="/quizzes">Quizzes</NavLink>}
-          {user.role === 'admin' && <NavLink to="/admin/users">Manage Users</NavLink>}
-          {user.role === 'admin' && <NavLink to="/admin/moderation">Moderation</NavLink>}
+
+          {isStaff && (
+            <NavLink to="/questions">Question Bank</NavLink>
+          )}
+
+          {user.role === 'instructor' && (
+            <NavLink to="/instructor/analytics">
+              Instructor Analytics
+            </NavLink>
+          )}
+
+          {user.role !== 'admin' && (
+            <NavLink to="/quizzes">Quizzes</NavLink>
+          )}
+
+          {user.role === 'admin' && (
+            <NavLink to="/admin/users">Manage Users</NavLink>
+          )}
+
+          {user.role === 'admin' && (
+            <NavLink to="/admin/moderation">Moderation</NavLink>
+          )}
+
           <span>{user.name} ({user.role})</span>
-          <button type="button" onClick={logout}>Log out</button>
+
+          <button type="button" onClick={logout}>
+            Log out
+          </button>
         </>
       ) : (
         <>
