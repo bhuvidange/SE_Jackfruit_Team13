@@ -1,0 +1,130 @@
+
+.instructor-analytics {
+  padding-top: 24px;
+  padding-bottom: 40px;
+}
+
+.analytics-heading,
+.analytics-quiz-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.analytics-heading h1,
+.analytics-quiz-heading h2 {
+  margin-bottom: 6px;
+}
+
+.analytics-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.analytics-selector label {
+  font-weight: 600;
+}
+
+.analytics-selector select {
+  width: 100%;
+  max-width: 500px;
+  padding: 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: white;
+  font: inherit;
+}
+
+.analytics-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.analytics-stat h2 {
+  font-size: 28px;
+  margin: 8px 0 0;
+}
+
+.analytics-stat p {
+  margin: 0;
+}
+
+.analytics-chart {
+  margin-bottom: 24px;
+}
+
+.analytics-chart h2,
+.analytics-question-list h2 {
+  margin-top: 0;
+}
+
+.analytics-chart-area {
+  width: 100%;
+  height: 300px;
+  margin-top: 20px;
+}
+
+.analytics-empty {
+  margin: 16px 0;
+}
+
+.analytics-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.analytics-question:last-child {
+  border-bottom: none;
+}
+
+.analytics-question p {
+  margin: 6px 0;
+}
+
+.analytics-question > strong {
+  white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+  .analytics-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .instructor-analytics {
+    padding-top: 16px;
+  }
+
+  .analytics-heading,
+  .analytics-quiz-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .analytics-stats {
+    gap: 10px;
+  }
+
+  .analytics-stat h2 {
+    font-size: 23px;
+  }
+
+  .analytics-chart-area {
+    height: 250px;
+  }
+
+  .analytics-question {
+    align-items: flex-start;
+  }
+}
