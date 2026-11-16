@@ -11,6 +11,7 @@
 | Package | Statements | Branches | Functions | Lines |
 |---|---:|---:|---:|---:|
 | Backend | 94.94% | 84.74% | 97.05% | 96.53% |
+| Frontend | 95.83% | 87.94% | 93.75% | 92.27% | 
 
 ## Commands and configured gates
 
