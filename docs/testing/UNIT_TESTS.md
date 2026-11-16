@@ -2,6 +2,17 @@
 
 **Purpose:** Verify isolated backend functions/middleware and frontend components/services with controlled inputs. API/database workflow tests are identified as integration tests even when stored beside unit tests.
 
+## Latest execution results
+
+**Build tested:** `2946902` (`main`)
+
+**Executed:** 2026-11-16
+
+| Package / scope | Result | Evidence / notes |
+|---|---|---|
+| Backend unit and API integration suites | **Passed** | 15 suites, 234 tests passed. |
+| Frontend component/service suites | **Partial; suite failed** | 96 tests passed across 12 files; `src/pages/InstructorAnalytics.test.jsx` failed to load because `recharts` is missing from the client dependencies. |
+
 ## Execution
 
 ```sh

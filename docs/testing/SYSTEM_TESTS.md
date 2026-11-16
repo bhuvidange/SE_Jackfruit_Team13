@@ -4,6 +4,20 @@
 **Purpose:** Verify complete user-visible workflows and system-level requirements across the React client, Express API, and MongoDB.  
 **Status:** Planned cases; record actual result, build, date, and defect ID when executed.
 
+## Latest execution results
+
+**Build tested:** `2946902` (`main`)
+
+**Executed:** 2026-11-16
+
+| Scope | Result | Evidence / notes |
+|---|---|---|
+| Complete API workflow (`server/tests/e2e.integration.test.js`) | **Passed** | 1 suite, 1 test passed. Registration through quiz attempt/result workflow completed. |
+| Full backend API suite | **Passed** | 15 suites, 234 tests passed. |
+| Browser/device, deployed TLS, monthly uptime, and 500-user load acceptance | **Not run** | These require target deployment, browser/device matrix, monitoring history, or dedicated load infrastructure. |
+
+The end-to-end API workflow is evidence for that workflow only; it does not establish the deployment-level acceptance criteria listed below.
+
 ## Test setup
 
 Use an isolated test database and a running client/API. Prepare student, instructor, and administrator accounts; two instructors; at least two students; materials, questions, quizzes, and attempts. Use supported browser versions specified in the SRS. Use an HTTPS deployment for TLS verification and a dedicated load-test environment for load checks. Do not run destructive tests against production data.

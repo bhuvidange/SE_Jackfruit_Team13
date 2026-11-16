@@ -2,6 +2,17 @@
 
 **Purpose:** Define how to measure code coverage and which decision outcomes must be exercised. This document supplements requirement-based system testing; coverage percentage alone does not prove requirement correctness.
 
+## Latest coverage results
+
+**Build tested:** `2946902` (`main`)
+
+**Executed:** 2026-11-16
+
+| Package | Statements | Branches | Functions | Lines | Outcome |
+|---|---:|---:|---:|---:|---|
+| Backend | 94.94% (845/890) | 84.74% (450/531) | 97.05% (132/136) | 96.53% (753/780) | **Threshold failed:** branch coverage is 0.26 percentage points below the configured 85% minimum. All 234 backend tests passed. |
+| Frontend | Not reported | Not reported | Not reported | Not reported | **Coverage run failed:** 96 tests passed, but `InstructorAnalytics.test.jsx` could not resolve the `recharts` dependency; coverage remapping also could not parse that page. |
+
 ## Commands and configured gates
 
 Run from each package directory:
