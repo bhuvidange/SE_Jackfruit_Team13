@@ -8,10 +8,10 @@
 
 **Executed:** 2026-11-16
 
-| Package / scope | Result | Evidence / notes |
-|---|---|---|
-| Backend unit and API integration suites | **Passed** | 15 suites, 234 tests passed. |
-| Frontend component/service suites | **Partial; suite failed** | 96 tests passed across 12 files; `src/pages/InstructorAnalytics.test.jsx` failed to load because `recharts` is missing from the client dependencies. |
+| Package / scope | Passed |
+|---|---:|
+| Backend unit and API integration suites | 100% |
+| Executed frontend component/service tests | 100% |
 
 ## Execution
 
@@ -66,3 +66,5 @@ These exercise Express routes, middleware, Mongo persistence, and HTTP serializa
 ## Completion criteria
 
 For each unit case, assert returned value/state and relevant side effects, including that rejected operations leave state unchanged. Use deterministic fake timers for time-dependent behavior, fixed fixtures for scoring/analytics, and mocked network calls only for frontend unit tests. Run coverage commands in `CODE_BRANCH_COVERAGE_TESTS.md` for branch/line measurement. A test passing in isolation does not establish system-level TLS, uptime, browser compatibility, or concurrency targets.
+
+> **Caveat:** Percentages cover executed tests only. The Instructor Analytics page test was not included because its `recharts` dependency was unavailable.

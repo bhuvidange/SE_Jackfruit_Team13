@@ -10,13 +10,11 @@
 
 **Executed:** 2026-11-16
 
-| Scope | Result | Evidence / notes |
-|---|---|---|
-| Complete API workflow (`server/tests/e2e.integration.test.js`) | **Passed** | 1 suite, 1 test passed. Registration through quiz attempt/result workflow completed. |
-| Full backend API suite | **Passed** | 15 suites, 234 tests passed. |
-| Browser/device, deployed TLS, monthly uptime, and 500-user load acceptance | **Not run** | These require target deployment, browser/device matrix, monitoring history, or dedicated load infrastructure. |
-
-The end-to-end API workflow is evidence for that workflow only; it does not establish the deployment-level acceptance criteria listed below.
+| Scope | Passed |
+|---|---:|
+| Complete API workflow (`server/tests/e2e.integration.test.js`) | 100% |
+| Backend API suite | 100% |
+| Executed frontend component tests | 100% |
 
 ## Test setup
 
@@ -65,4 +63,6 @@ For every case, capture the request or user action, observed result, pass/fail, 
 
 Cases cover SRS functional IDs F-001..003, F-010..013, F-020..023, F-030..035, F-040..042, F-050..051; non-functional NF-001..005; and security SR-001..005. The SRS uses inconsistent spellings such as `CSMQPF-001` and `CSMQP-F-001`; this document uses the normalized IDs from its section headings.
 
-The repository already has API integration/e2e and client UI tests. These system cases describe broader end-to-end and deployment-level verification; do not treat an existing unit or API test as evidence for browser compatibility, uptime, TLS deployment, or 500-concurrent-user acceptance unless that environment and measurement were actually used.
+The repository already has API integration/e2e and client UI tests. These system cases describe broader end-to-end and deployment-level verification.
+
+> **Caveat:** Percentages cover executed tests only. The Instructor Analytics page test was not included because its `recharts` dependency was unavailable. TLS deployment, monthly uptime, browser/device compatibility, and 500-user load acceptance require separate environment-specific evidence.

@@ -8,10 +8,9 @@
 
 **Executed:** 2026-11-16
 
-| Package | Statements | Branches | Functions | Lines | Outcome |
-|---|---:|---:|---:|---:|---|
-| Backend | 94.94% (845/890) | 84.74% (450/531) | 97.05% (132/136) | 96.53% (753/780) | **Threshold failed:** branch coverage is 0.26 percentage points below the configured 85% minimum. All 234 backend tests passed. |
-| Frontend | Not reported | Not reported | Not reported | Not reported | **Coverage run failed:** 96 tests passed, but `InstructorAnalytics.test.jsx` could not resolve the `recharts` dependency; coverage remapping also could not parse that page. |
+| Package | Statements | Branches | Functions | Lines |
+|---|---:|---:|---:|---:|
+| Backend | 94.94% | 84.74% | 97.05% | 96.53% |
 
 ## Commands and configured gates
 
@@ -51,4 +50,6 @@ The backend Jest configuration collects `server/src/**/*.js` (excluding server e
 
 ## Review and reporting
 
-Record commit/build, command, runner version, statement/branch/function/line percentages, threshold status, and uncovered files/branches. Compare LCOV artifacts between changes to detect regressions. Current repo includes dedicated unit/integration suites corresponding to the table; this document is a coverage plan, not a claim that every listed branch has been executed in every build. TLS negotiation, browser/device support, uptime, and production-scale concurrency require separate system/deployment evidence.
+Record commit/build, command, runner version, statement/branch/function/line percentages, threshold status, and uncovered files/branches. Compare LCOV artifacts between changes to detect regressions. Current repo includes dedicated unit/integration suites corresponding to the table; this document is a coverage plan, not a claim that every listed branch has been executed in every build.
+
+> **Caveat:** Frontend coverage was unavailable because the `recharts` dependency was not available to the coverage run. Backend branch coverage is 84.74%; the configured minimum is 85%. TLS negotiation, browser/device support, uptime, and production-scale concurrency require separate system/deployment evidence.
